@@ -12,3 +12,29 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Issue {
+  id          Int      @id @default(autoincrement())
+
+  //The default size in mysql is varchar(191) which means max 191 characters, so by doing @db.VarChar(255) we are specifying we want 255 characters
+  title       String   @db.VarChar(255)
+
+  //@db.string is used for description as we will need a lot of text for the description
+  description String   @db.Text
+
+  //By using @default(OPEN) we are specifying that we want the default status to be open
+  status      Status   @default(OPEN)
+
+  //Everytime a new recorded is added to the issue table, it is given the current day time of creation
+  createdAt   DateTime @default(now())
+
+  //Everytime an issue record is updated, the database engine updates the value of this column
+  updatedAt   DateTime @updatedAt
+}
+
+//By convention we use capital letters for enums
+enum Status {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
